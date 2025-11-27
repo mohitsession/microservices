@@ -1,0 +1,16 @@
+services:
+  accounts:
+    image: "trainingoct/accounts:l1"
+    ports:
+      - "8080:8080"
+    container_name: "accounts_service"  
+  loans:
+    image: "trainingoct/loans:l1"
+    ports:
+      - "8082:8082"   
+    container_name: "loans_service" 
+  cards:
+    image: "trainingoct/cards:l1"
+    ports:
+      - "8081:8081"       
+    container_name: "cards_service"

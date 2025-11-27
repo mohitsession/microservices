@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: configService
+  profiles:
+    #active: native
+    active: git
+  cloud:
+    config:
+     server:
+      #native:
+        #search-locations: "classpath:/config"
+        #search-locations: "file:///filePath"
+       git:
+         uri: "https://github.com/mohitsession/config.git"
+         default-label: main
+server:
+  port: "8090"
