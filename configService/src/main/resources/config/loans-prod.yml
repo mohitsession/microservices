@@ -1,0 +1,9 @@
+build:
+   version: "1.0"
+
+accounts:
+  message: "Loans MicroService from config server"
+  contactDetails:
+    name: "Rohan"
+    email: "rohan@companyname.com"
+  env: "Prod"

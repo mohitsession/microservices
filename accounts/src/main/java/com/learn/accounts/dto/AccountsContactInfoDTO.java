@@ -4,7 +4,19 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "accounts")
-public record AccountsContactInfoDTO(String message, Map<String, String> contactDetails, String env) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@ConfigurationProperties(prefix = "accounts")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AccountsContactInfoDTO {
+
+	private String message;
+	private Map<String, String> contactDetails;
+	private String env;
 }
