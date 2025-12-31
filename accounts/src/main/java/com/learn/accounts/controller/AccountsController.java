@@ -1,5 +1,7 @@
 package com.learn.accounts.controller;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,7 +28,8 @@ import com.learn.accounts.dto.CustomerDto;
 import com.learn.accounts.dto.ErrorResponseDto;
 import com.learn.accounts.dto.ResponseDto;
 import com.learn.accounts.service.IAccountsService;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Tag(name = "CRUD REST APIs for Accounts in EazyBank", description = "CRUD REST APIs in EazyBank to CREATE, UPDATE, FETCH AND DELETE account details")
 @RestController
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -34,6 +37,8 @@ import com.learn.accounts.service.IAccountsService;
 @Validated
 public class AccountsController {
 
+	  private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
+	
 	private IAccountsService iAccountsService;
 
 	public AccountsController(IAccountsService iAccountsService) {
@@ -102,16 +107,35 @@ public class AccountsController {
 		}
 	}
 
+	@Retry(name = "getBuildInfo",fallbackMethod = "getBuildInfoFallback")
 	@GetMapping("/build-info")
 	public ResponseEntity<String> getBuildVersion() {
+		logger.info("getBuildVersion() method Invoked");
+//		throw new NullPointerException();
 		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
 	}
 	
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        logger.info("getBuildInfoFallback() method Invoked");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.9");
+    }
+
+
+    @RateLimiter(name= "getJavaPath", fallbackMethod = "getJavaPathFallback")
 	@GetMapping("/java-path")
 	public ResponseEntity<String> getJavaPath() {
 		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("OneDrive"));
 	}
 	
+    public ResponseEntity<String> getJavaPathFallback(Throwable throwable) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("OneDrive");
+    }
+    
+    
 	@GetMapping("/contact-info")
 	public ResponseEntity<AccountsContactInfoDTO> getContactInfo() {
 		return ResponseEntity.status(HttpStatus.OK).body(accountsContactInfoDTO);
